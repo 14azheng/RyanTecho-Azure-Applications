@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:converters="clr-namespace:RyanTechno.AzureApps.Client.ExchangeMobile.Converters"
+             x:Class="RyanTechno.AzureApps.Client.ExchangeMobile.Views.MainPage"
+             prism:ViewModelLocator.AutowireViewModel="Automatic">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:CurrencyImageConverter x:Key="ImgConv" />
+            <converters:ReverseBooleanConverter x:Key="RevBoolConv" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="8*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" HorizontalOptions="Fill" Background="{StaticResource Blue300Accent}">
+            <Label Text="请选择订阅的货币" TextColor="White" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" />
+        </Border>
+        <ScrollView Grid.Row="1">
+            <ListView ItemsSource="{Binding SubscriptionList}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="4*" />
+                                    <ColumnDefinition Width="4*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding Abbreviation, Converter={StaticResource ImgConv}}" WidthRequest="40" HeightRequest="30" />
+                                <Label Grid.Column="1" Text="{Binding DisplayName}" VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="2" IsVisible="{Binding Subscribed}">
+                                    <Entry Placeholder="最小值" Text="{Binding MinMonitorRate, Mode=TwoWay}" />
+                                    <Label Text="/" Padding="10, 0" />
+                                    <Entry Placeholder="最大值" Text="{Binding MaxMonitorRate, Mode=TwoWay}" />
+                                </HorizontalStackLayout>
+                                <CheckBox Grid.Column="3" IsChecked="{Binding Subscribed}" VerticalOptions="Center" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollView>
+
+        <Border Grid.Row="2">
+            <HorizontalStackLayout>
+                <Button Text="实时汇率" Command="{Binding ViewLiveExchangeCommand}" Padding="15,0" />
+                <Button Text="订阅" Command="{Binding SubscribeCommand}" Padding="15,0" Margin="15,0" />
+            </HorizontalStackLayout>
+        </Border>
+    </Grid>
+
+
+</ContentPage>
