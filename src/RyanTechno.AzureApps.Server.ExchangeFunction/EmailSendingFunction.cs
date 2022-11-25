@@ -1,18 +1,36 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using RyanTechno.AzureApps.Server.ExchangeFunction.Helpers;
-using RyanTechno.AzureApps.Server.ExchangeFunction.Models;
-using RyanTechno.AzureApps.Domain.Currency;
+using RyanTechno.AzureApps.Common.Interfaces.Network;
+using RyanTechno.AzureApps.Common.Interfaces.Exchange;
+using RyanTechno.AzureApps.Common.Interfaces.Infrastructure;
+using RyanTechno.AzureApps.Common.Models;
+using RyanTechno.AzureApps.Domain.Configuration;
+using RyanTechno.AzureApps.Domain.Exchange;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
+using RyanTechno.AzureApps.Common.Models.Infrastructure;
 
 namespace RyanTechno.AppService.ExchangeFunction
 {
     public class EmailSendingFunction
     {
+        private readonly IHttpRestService _httpRestService;
+        private readonly IExchangeService _exchangeService;
+        private readonly IEmailService _emailService;
+
+        public EmailSendingFunction(
+            IHttpRestService httpRestService, 
+            IExchangeService exchangeService, 
+            IEmailService emailService)
+        {
+            this._httpRestService = httpRestService;
+            this._exchangeService = exchangeService;
+            this._emailService = emailService;
+        }
+
         /// <summary>
         /// Query live exchange rate timely and send notification to subscribers.
         /// </summary>
@@ -20,11 +38,12 @@ namespace RyanTechno.AppService.ExchangeFunction
         /// <param name="logger"></param>
         /// <returns></returns>
         /// <remarks>Some timer trigger settings
-        /// TimerTrigger("0 30 10 * * *") - at 10:00 am every day
+        /// TimerTrigger("0 30 10 * * *") - at 10:30 am every day
         /// TimerTrigger("0 5 * * * *") - Once every hour of the day at minute 5 of each hour
+        /// Time zone diff -8
         /// </remarks>
         [FunctionName("ExchangeRateEmailNotification")]
-        public async Task Run([TimerTrigger("0 30 10 * * *")] TimerInfo myTimer, ILogger logger)
+        public async Task Run([TimerTrigger("0 30 2 * * *")] TimerInfo myTimer, ILogger logger)
         {
             logger.LogInformation($"Exchange rate email notification trigger function executed at: {DateTime.Now}");
 
@@ -37,7 +56,6 @@ namespace RyanTechno.AppService.ExchangeFunction
         {
             AzureStorageInfo storageInfo = new AzureStorageInfo
             {
-                //ConnectionString = "DefaultEndpointsProtocol=https;AccountName=ryantechnostorage;AccountKey=y4z2N/6dWXUoPvBBphk25rZ6KX9AgYqxfoHIoTEYTmKTzQRpQ6jvggHINDPf+eQae8KLcEVZ/TJD+ASt+yaGWg==;EndpointSuffix=core.windows.net",
                 Endpoint = Environment.GetEnvironmentVariable("StorageServiceEndpoint"),
                 AccountName = Environment.GetEnvironmentVariable("StorageServiceAccountName"),
 
@@ -51,12 +69,17 @@ namespace RyanTechno.AppService.ExchangeFunction
                 AccountKey = Environment.GetEnvironmentVariable("StorageServiceAccountKey"),
             };
 
-            IImmutableList<CurrencyAzureTable> currencySubList = AzureTableHelper.GetSubscribedCurrencyList(storageInfo);
-            ExchangeServiceConfiguration exchangeServiceConfiguration = AzureTableHelper.GetExchangeServiceConfiguration(storageInfo);
+            logger.LogInformation("Storage info retrieved...");
 
-            RestServiceProvider restServiceProvider = new RestServiceProvider(logger);
+            IImmutableList<CurrencySubscription> currencySubList = _exchangeService.GetSubscribedCurrencyList(storageInfo);
 
-            var tokenTask = await restServiceProvider.GetAccessTokenAsync(new AuthenticationInfo
+            logger.LogInformation("Currency subscription info retrieved...");
+
+            ExchangeServiceConfiguration exchangeServiceConfiguration = _exchangeService.GetExchangeServiceConfiguration(storageInfo);
+
+            logger.LogInformation("Exchange service configuration info retrieved...");
+
+            var tokenTask = await _httpRestService.GetAccessTokenAsync(new AuthenticationInfo
             {
                 AcquireAccessTokenEndpoint = exchangeServiceConfiguration.AuthenticationServerEndpoint,
                 ClientId = exchangeServiceConfiguration.AuthenticationClientId,
@@ -64,11 +87,13 @@ namespace RyanTechno.AppService.ExchangeFunction
                 Scope = exchangeServiceConfiguration.AuthenticationScope,
             });
 
-            if (tokenTask.Success)
-            {
-                string accessToken = tokenTask.AccessToken;
+            logger.LogInformation("Authentication token requesting...");
 
-                var currencyTask = await restServiceProvider.GetResourcesAsync<CurrencyApiStructure>(new RestRequestInfo
+            if (tokenTask.IsCompleted)
+            {
+                string accessToken = tokenTask.Result;
+
+                var exchangeTask = await _httpRestService.GetResourcesAsync<CurrencyApiStructure>(new RestRequestInfo
                 {
                     RequestEndpoint = $"{exchangeServiceConfiguration.ExchangeApiEndpoint}?source=CNY&targets={string.Join(',', currencySubList.Select(c => c.Target))}",
                     RequestHeaders = new Dictionary<string, string>
@@ -77,12 +102,14 @@ namespace RyanTechno.AppService.ExchangeFunction
                     }
                 });
 
-                if (currencyTask.Success)
-                {
-                    List<CurrencyAzureTable> exceedCurrencies = new();
-                    List<CurrencyAzureTable> deficientCurrencies = new();
+                logger.LogInformation("Exchange live info requesting...");
 
-                    foreach (KeyValuePair<string, decimal> pair in currencyTask.Resource.Quotes)
+                if (exchangeTask.IsCompleted)
+                {
+                    List<CurrencySubscription> exceedCurrencies = new();
+                    List<CurrencySubscription> deficientCurrencies = new();
+
+                    foreach (KeyValuePair<string, decimal> pair in exchangeTask.Result.Quotes)
                     {
                         decimal convertedRate = ConvertLiveQuote(pair.Key, pair.Value);
 
@@ -92,14 +119,14 @@ namespace RyanTechno.AppService.ExchangeFunction
 
                         if (currency is not null)
                         {
-                            logger.LogInformation($"{pair.Key} Max Level: {currency.MaxLevel} | Min Level: {currency.MinLevel}");
+                            logger.LogInformation($"{pair.Key} Max Level: {currency.MaxMonitorRate} | Min Level: {currency.MinMonitorRate}");
 
-                            if (convertedRate >= (decimal)currency.MaxLevel)
+                            if (convertedRate >= (decimal)currency.MaxMonitorRate)
                             {
                                 exceedCurrencies.Add(currency);
                             }
 
-                            if (convertedRate <= (decimal)currency.MinLevel)
+                            if (convertedRate <= (decimal)currency.MinMonitorRate)
                             {
                                 deficientCurrencies.Add(currency);
                             }
@@ -110,10 +137,33 @@ namespace RyanTechno.AppService.ExchangeFunction
 
                     if (exceedCurrencies.Any() || deficientCurrencies.Any())
                     {
-                        OutlookEmailProvider outlookEmailProvider = new OutlookEmailProvider(exchangeServiceConfiguration.SmtpEmailAccount, Environment.GetEnvironmentVariable("SmtpEmailPassword"), logger);
-                        outlookEmailProvider.SendExchangeRateNotificationEmail(exceedCurrencies.ToImmutableArray(), deficientCurrencies.ToImmutableArray());
+                        var exceedStr = exceedCurrencies.Any() ? string.Join('|', exceedCurrencies.Select(c => c.Target)) : string.Empty;
+                        var deficientStr = deficientCurrencies.Any() ? string.Join('|', deficientCurrencies.Select(c => c.Target)) : string.Empty;
+
+                        logger.LogInformation($"Sending email notification...");
+                        logger.LogInformation($"Exceed currencies: {exceedStr}");
+                        logger.LogInformation($"Deficient currencies: {deficientStr}");
+
+                        _emailService.SetSenderCredential(new OutlookSenderCredential
+                        {
+                            AccountName = Environment.GetEnvironmentVariable("EmailSenderAddress"),
+                            Password = Environment.GetEnvironmentVariable("SmtpEmailPassword"),
+                        });
+                        _emailService.SendExchangeRateNotificationEmail(exceedCurrencies.ToImmutableArray(), deficientCurrencies.ToImmutableArray());
+                    }
+                    else
+                    {
+                        logger.LogInformation("No email notification need to be sent out...");
                     }
                 }
+                else
+                {
+                    logger.LogError($"Exchange live info request failed, reason: {exchangeTask.Error}");
+                }
+            }
+            else
+            {
+                logger.LogError($"Authentication token request failed, reason: {tokenTask.Error}");
             }
         }
 
