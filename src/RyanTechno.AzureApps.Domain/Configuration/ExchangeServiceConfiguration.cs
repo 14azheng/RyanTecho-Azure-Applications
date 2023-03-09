@@ -10,7 +10,9 @@
 
         public string AuthenticationScope { get; set; }
 
-        public string ExchangeApiEndpoint { get; set; }
+        public string LiveExchangeApiEndpoint { get; set; }
+
+        public string DailyExchangeBoardcastApiEndpoint { get; set; }
 
         public string SmtpEmailAccount { get; set; }
     }

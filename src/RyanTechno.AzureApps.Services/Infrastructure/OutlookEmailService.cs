@@ -1,4 +1,5 @@
 ﻿using RyanTechno.AzureApps.Common.Interfaces.Infrastructure;
+using RyanTechno.AzureApps.Common.Models.Exchange;
 using RyanTechno.AzureApps.Common.Models.Infrastructure;
 using RyanTechno.AzureApps.Domain.Exchange;
 using RyanTechno.AzureApps.Infrastructure.Helpers;
@@ -12,6 +13,23 @@ namespace RyanTechno.AzureApps.Services.Infrastructure
 
         public OutlookEmailService()
         {
+        }
+
+        public bool SendExchangeDailyBoardcastEmail(DailyExchangeRateBoardcastApiStructure boardcast)
+        {
+            if (_senderCredential is null)
+                throw new ArgumentNullException("Sender credential is not set.");
+
+            if (_senderCredential is not OutlookSenderCredential)
+                throw new ArgumentException($"Provided email sender credential is not a {typeof(OutlookSenderCredential)}.");
+
+            return OutlookEmailHelper.SendEmail(_senderCredential as OutlookSenderCredential, new EmailOptions
+            {
+                Body = boardcast.ToEmailBody(),
+                Subject = "每日汇率播报",
+                FromAddress = "zheng14a@hotmail.com",
+                ToAddresses = new List<string>() { "zheng14a@hotmail.com" },
+            });
         }
 
         public bool SendExchangeRateNotificationEmail(IImmutableList<CurrencySubscription> exceedCurrencyList, IImmutableList<CurrencySubscription> deficientCurrencyList)

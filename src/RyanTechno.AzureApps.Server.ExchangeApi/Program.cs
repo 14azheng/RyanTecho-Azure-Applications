@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.OpenApi.Models;
+using RyanTechno.AzureApps.Common.Interfaces.Exchange;
 using RyanTechno.AzureApps.Common.Interfaces.Network;
+using RyanTechno.AzureApps.Services.Exchange;
 using RyanTechno.AzureApps.Services.Network;
 using System.Reflection;
 
@@ -32,6 +34,7 @@ builder.Services.AddAuthorization(options =>
 });
 // Register Ioc services.
 builder.Services.AddSingleton<IHttpRestService, HttpRestService>();
+builder.Services.AddSingleton<IExchangeService, AzureExchangeService>();
 
 // Configure azure file logging details.
 builder.Services.Configure<AzureFileLoggerOptions>(options =>

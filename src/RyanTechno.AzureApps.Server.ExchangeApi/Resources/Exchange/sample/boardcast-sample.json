@@ -1,0 +1,652 @@
+{
+  "historical_highest_rates": {
+    "CNYARS": {
+      "live_rate": 28.698619,
+      "lowest_rate": 0.555174,
+      "highest_rate": 25.569247
+    },
+    "CNYBWP": {
+      "live_rate": 1.924527,
+      "lowest_rate": 0.964894,
+      "highest_rate": 1.901038
+    },
+    "CNYEGP": {
+      "live_rate": 4.432425,
+      "lowest_rate": 0.794438,
+      "highest_rate": 3.581277
+    },
+    "CNYHTG": {
+      "live_rate": 21.970013,
+      "lowest_rate": 5.816201,
+      "highest_rate": 21.456795
+    },
+    "CNYKES": {
+      "live_rate": 18.508645,
+      "lowest_rate": 11.028832,
+      "highest_rate": 18.139182
+    },
+    "CNYMNT": {
+      "live_rate": 507.198518,
+      "lowest_rate": 180.261023,
+      "highest_rate": 499.399916
+    },
+    "CNYPKR": {
+      "live_rate": 40.02762,
+      "lowest_rate": 12.256877,
+      "highest_rate": 35.613694
+    },
+    "CNYSDG": {
+      "live_rate": 85.174778,
+      "lowest_rate": 0.325067,
+      "highest_rate": 84.700117
+    },
+    "CNYSLE": {
+      "live_rate": 2.968866,
+      "lowest_rate": 2.436929,
+      "highest_rate": 2.742733
+    },
+    "CNYSRD": {
+      "live_rate": 4.874354,
+      "lowest_rate": 0.394115,
+      "highest_rate": 4.611406
+    },
+    "CNYTRY": {
+      "live_rate": 2.71942,
+      "lowest_rate": 0.209011,
+      "highest_rate": 2.70891
+    },
+    "CNYVES": {
+      "live_rate": 3.462296,
+      "lowest_rate": 1.20291,
+      "highest_rate": 2.478406
+    }
+  },
+  "historical_highest_rates_90": {
+    "CNYBDT": {
+      "live_rate": 15.10485,
+      "lowest_rate": 10.065784,
+      "highest_rate": 15.241294
+    },
+    "CNYBIF": {
+      "live_rate": 298.261713,
+      "lowest_rate": 0.129713,
+      "highest_rate": 323.154888
+    },
+    "CNYBTN": {
+      "live_rate": 11.773514,
+      "lowest_rate": 6.484972,
+      "highest_rate": 12.161357
+    },
+    "CNYCOP": {
+      "live_rate": 681.812378,
+      "lowest_rate": 265.408769,
+      "highest_rate": 708.655003
+    },
+    "CNYETB": {
+      "live_rate": 7.721541,
+      "lowest_rate": 1.565671,
+      "highest_rate": 8.155252
+    },
+    "CNYGMD": {
+      "live_rate": 8.786468,
+      "lowest_rate": 3.80543,
+      "highest_rate": 8.981045
+    },
+    "CNYINR": {
+      "live_rate": 11.764318,
+      "lowest_rate": 6.477894,
+      "highest_rate": 12.194817
+    },
+    "CNYLAK": {
+      "live_rate": 2428.627561,
+      "lowest_rate": 680.138088,
+      "highest_rate": 2591.363467
+    },
+    "CNYLBP": {
+      "live_rate": 2153.605177,
+      "lowest_rate": 109.344236,
+      "highest_rate": 2236.280784
+    },
+    "CNYMGA": {
+      "live_rate": 618.136084,
+      "lowest_rate": 0.495639,
+      "highest_rate": 649.472688
+    },
+    "CNYMMK": {
+      "live_rate": 301.307302,
+      "lowest_rate": 0.952418,
+      "highest_rate": 312.693151
+    },
+    "CNYMWK": {
+      "live_rate": 145.929131,
+      "lowest_rate": 20.981016,
+      "highest_rate": 153.741899
+    },
+    "CNYNGN": {
+      "live_rate": 66.085437,
+      "lowest_rate": 21.857157,
+      "highest_rate": 66.240927
+    },
+    "CNYNPR": {
+      "live_rate": 18.837901,
+      "lowest_rate": 10.305523,
+      "highest_rate": 19.458182
+    },
+    "CNYRWF": {
+      "live_rate": 156.399321,
+      "lowest_rate": 74.519872,
+      "highest_rate": 164.240955
+    },
+    "CNYSBD": {
+      "live_rate": 1.18343,
+      "lowest_rate": 0.000122,
+      "highest_rate": 1.290664
+    },
+    "CNYSEK": {
+      "live_rate": 1.538984,
+      "lowest_rate": 0.926385,
+      "highest_rate": 1.587217
+    },
+    "CNYSYP": {
+      "live_rate": 360.474861,
+      "lowest_rate": 6.640915,
+      "highest_rate": 398.13626
+    },
+    "CNYUAH": {
+      "live_rate": 5.298869,
+      "lowest_rate": 1.148957,
+      "highest_rate": 5.49572
+    },
+    "CNYZAR": {
+      "live_rate": 2.670317,
+      "lowest_rate": 1.003041,
+      "highest_rate": 2.71613
+    }
+  },
+  "historical_highest_rates_80": {
+    "CNYBYR": {
+      "live_rate": 2812.81654,
+      "lowest_rate": 414.85457,
+      "highest_rate": 3367.178145
+    },
+    "CNYCDF": {
+      "live_rate": 293.910616,
+      "lowest_rate": 127.434964,
+      "highest_rate": 319.406325
+    },
+    "CNYCUP": {
+      "live_rate": 3.803043,
+      "lowest_rate": 0.143698,
+      "highest_rate": 4.229985
+    },
+    "CNYFKP": {
+      "live_rate": 0.121045,
+      "lowest_rate": 0.089575,
+      "highest_rate": 0.125277
+    },
+    "CNYGGP": {
+      "live_rate": 0.121045,
+      "lowest_rate": 0.093913,
+      "highest_rate": 0.125277
+    },
+    "CNYGIP": {
+      "live_rate": 0.121045,
+      "lowest_rate": 0.089641,
+      "highest_rate": 0.125277
+    },
+    "CNYIDR": {
+      "live_rate": 2216.384624,
+      "lowest_rate": 1311.869627,
+      "highest_rate": 2346.81137
+    },
+    "CNYIMP": {
+      "live_rate": 0.121045,
+      "lowest_rate": 0.093913,
+      "highest_rate": 0.125277
+    },
+    "CNYIQD": {
+      "live_rate": 209.362098,
+      "lowest_rate": 97.710347,
+      "highest_rate": 232.129466
+    },
+    "CNYJEP": {
+      "live_rate": 0.121045,
+      "lowest_rate": 0.093913,
+      "highest_rate": 0.125277
+    },
+    "CNYJPY": {
+      "live_rate": 19.669553,
+      "lowest_rate": 11.911286,
+      "highest_rate": 20.85269
+    },
+    "CNYKPW": {
+      "live_rate": 129.157533,
+      "lowest_rate": 18.663778,
+      "highest_rate": 148.738745
+    },
+    "CNYLKR": {
+      "live_rate": 47.340609,
+      "lowest_rate": 16.517458,
+      "highest_rate": 54.771777
+    },
+    "CNYLTL": {
+      "live_rate": 0.423751,
+      "lowest_rate": 0.056004,
+      "highest_rate": 0.503873
+    },
+    "CNYMUR": {
+      "live_rate": 6.752357,
+      "lowest_rate": 4.182473,
+      "highest_rate": 7.152781
+    },
+    "CNYNOK": {
+      "live_rate": 1.533243,
+      "lowest_rate": 0.806897,
+      "highest_rate": 1.659114
+    },
+    "CNYPGK": {
+      "live_rate": 0.505537,
+      "lowest_rate": 0.043215,
+      "highest_rate": 0.561422
+    },
+    "CNYPYG": {
+      "live_rate": 1030.408344,
+      "lowest_rate": 583.531873,
+      "highest_rate": 1116.097517
+    },
+    "CNYTOP": {
+      "live_rate": 0.340781,
+      "lowest_rate": 0.229199,
+      "highest_rate": 0.365126
+    },
+    "CNYUZS": {
+      "live_rate": 1633.242166,
+      "lowest_rate": 220.920736,
+      "highest_rate": 1817.267235
+    },
+    "CNYZMK": {
+      "live_rate": 1291.767567,
+      "lowest_rate": 1.289793,
+      "highest_rate": 1436.791227
+    }
+  },
+  "historical_highest_rates_70": {
+    "CNYAUD": {
+      "live_rate": 0.217913,
+      "lowest_rate": 0.140509,
+      "highest_rate": 0.245038
+    },
+    "CNYAZN": {
+      "live_rate": 0.243653,
+      "lowest_rate": 0.116243,
+      "highest_rate": 0.279131
+    },
+    "CNYBRL": {
+      "live_rate": 0.73845,
+      "lowest_rate": 0.238299,
+      "highest_rate": 0.901696
+    },
+    "CNYDZD": {
+      "live_rate": 19.647808,
+      "lowest_rate": 10.445022,
+      "highest_rate": 22.628378
+    },
+    "CNYFJD": {
+      "live_rate": 0.321135,
+      "lowest_rate": 0.264559,
+      "highest_rate": 0.344997
+    },
+    "CNYGBP": {
+      "live_rate": 0.121174,
+      "lowest_rate": 0.089543,
+      "highest_rate": 0.129939
+    },
+    "CNYHUF": {
+      "live_rate": 51.480319,
+      "lowest_rate": 26.827327,
+      "highest_rate": 62.038137
+    },
+    "CNYISK": {
+      "live_rate": 20.398667,
+      "lowest_rate": 14.314489,
+      "highest_rate": 22.429674
+    },
+    "CNYJMD": {
+      "live_rate": 21.988762,
+      "lowest_rate": 12.680482,
+      "highest_rate": 24.833938
+    },
+    "CNYMAD": {
+      "live_rate": 1.501335,
+      "lowest_rate": 1.135735,
+      "highest_rate": 1.625846
+    },
+    "CNYMRO": {
+      "live_rate": 51.233419,
+      "lowest_rate": 30.010952,
+      "highest_rate": 56.582241
+    },
+    "CNYNIO": {
+      "live_rate": 5.247424,
+      "lowest_rate": 2.816907,
+      "highest_rate": 6.284482
+    },
+    "CNYNZD": {
+      "live_rate": 0.23502,
+      "lowest_rate": 0.17704,
+      "highest_rate": 0.251459
+    },
+    "CNYPHP": {
+      "live_rate": 7.928483,
+      "lowest_rate": 6.340887,
+      "highest_rate": 8.405644
+    },
+    "CNYPLN": {
+      "live_rate": 0.637261,
+      "lowest_rate": 0.407342,
+      "highest_rate": 0.725691
+    },
+    "CNYRON": {
+      "live_rate": 0.66836,
+      "lowest_rate": 0.414839,
+      "highest_rate": 0.732805
+    },
+    "CNYRSD": {
+      "live_rate": 15.957706,
+      "lowest_rate": 9.754669,
+      "highest_rate": 18.260455
+    },
+    "CNYTZS": {
+      "live_rate": 334.667739,
+      "lowest_rate": 194.433283,
+      "highest_rate": 373.060302
+    },
+    "CNYUGX": {
+      "live_rate": 531.678724,
+      "lowest_rate": 278.966991,
+      "highest_rate": 599.91575
+    },
+    "CNYVND": {
+      "live_rate": 3402.646947,
+      "lowest_rate": 2700.666965,
+      "highest_rate": 3638.726337
+    },
+    "CNYVUV": {
+      "live_rate": 17.054536,
+      "lowest_rate": 13.385049,
+      "highest_rate": 18.016208
+    },
+    "CNYZMW": {
+      "live_rate": 2.89462,
+      "lowest_rate": 0.85072,
+      "highest_rate": 3.53481
+    }
+  },
+  "historical_lowest_rates": {},
+  "historical_lowest_rates_90": {
+    "CNYALL": {
+      "live_rate": 15.616786,
+      "lowest_rate": 8.552666,
+      "highest_rate": 799.105897
+    },
+    "CNYAMD": {
+      "live_rate": 55.754786,
+      "lowest_rate": 53.290365,
+      "highest_rate": 82.051674
+    },
+    "CNYBTC": {
+      "live_rate": 0.000006593967,
+      "lowest_rate": 0.000002315355,
+      "highest_rate": 0.012149
+    },
+    "CNYDOP": {
+      "live_rate": 7.930893,
+      "lowest_rate": 5.274153,
+      "highest_rate": 378.270592
+    },
+    "CNYGEL": {
+      "live_rate": 0.370314,
+      "lowest_rate": 0.247838,
+      "highest_rate": 38.65082
+    },
+    "CNYGHS": {
+      "live_rate": 1.771899,
+      "lowest_rate": 0.206767,
+      "highest_rate": 81.264108
+    },
+    "CNYKMF": {
+      "live_rate": 67.048576,
+      "lowest_rate": 33.161813,
+      "highest_rate": 3153.178291
+    },
+    "CNYLRD": {
+      "live_rate": 23.011981,
+      "lowest_rate": 10.058549,
+      "highest_rate": 1163.855973
+    },
+    "CNYLYD": {
+      "live_rate": 0.691931,
+      "lowest_rate": 0.17555,
+      "highest_rate": 36.523521
+    },
+    "CNYMYR": {
+      "live_rate": 0.649316,
+      "lowest_rate": 0.456374,
+      "highest_rate": 3231.258164
+    },
+    "CNYSOS": {
+      "live_rate": 81.729506,
+      "lowest_rate": 71.330902,
+      "highest_rate": 260.511603
+    },
+    "CNYTMT": {
+      "live_rate": 0.503724,
+      "lowest_rate": 0.4058,
+      "highest_rate": 26.459458
+    },
+    "CNYTND": {
+      "live_rate": 0.454636,
+      "lowest_rate": 0.189878,
+      "highest_rate": 4.404559
+    },
+    "CNYVEF": {
+      "live_rate": 347568.002477,
+      "lowest_rate": 0.314454,
+      "highest_rate": 33890753416.71551
+    },
+    "CNYXPF": {
+      "live_rate": 16.298536,
+      "lowest_rate": 9.404814,
+      "highest_rate": 1743.925846
+    },
+    "CNYYER": {
+      "live_rate": 35.920256,
+      "lowest_rate": 19.224559,
+      "highest_rate": 1965.8077
+    }
+  },
+  "historical_lowest_rates_80": {
+    "CNYBND": {
+      "live_rate": 0.194321,
+      "lowest_rate": 0.18652,
+      "highest_rate": 0.234633
+    },
+    "CNYCRC": {
+      "live_rate": 78.900476,
+      "lowest_rate": 73.899261,
+      "highest_rate": 104.272587
+    },
+    "CNYCVE": {
+      "live_rate": 15.012265,
+      "lowest_rate": 11.087785,
+      "highest_rate": 36.545406
+    },
+    "CNYKHR": {
+      "live_rate": 580.838339,
+      "lowest_rate": 57.894871,
+      "highest_rate": 3287.860799
+    },
+    "CNYSCR": {
+      "live_rate": 1.887748,
+      "lowest_rate": 1.600901,
+      "highest_rate": 3.350734
+    },
+    "CNYSGD": {
+      "live_rate": 0.19423,
+      "lowest_rate": 0.186667,
+      "highest_rate": 0.225426
+    },
+    "CNYXAU": {
+      "live_rate": 0.000079151434,
+      "lowest_rate": 0.000069472245,
+      "highest_rate": 0.000149
+    },
+    "CNYXOF": {
+      "live_rate": 89.316579,
+      "lowest_rate": 46.753854,
+      "highest_rate": 457.086972
+    }
+  },
+  "historical_lowest_rates_70": {
+    "CNYAED": {
+      "live_rate": 0.527131,
+      "lowest_rate": 0.502827,
+      "highest_rate": 0.607056
+    },
+    "CNYBBD": {
+      "live_rate": 0.289693,
+      "lowest_rate": 0.274509,
+      "highest_rate": 0.330531
+    },
+    "CNYBHD": {
+      "live_rate": 0.054112,
+      "lowest_rate": 0.051483,
+      "highest_rate": 0.062292
+    },
+    "CNYBMD": {
+      "live_rate": 0.143511,
+      "lowest_rate": 0.136895,
+      "highest_rate": 0.165265
+    },
+    "CNYBOB": {
+      "live_rate": 0.991468,
+      "lowest_rate": 0.938561,
+      "highest_rate": 1.143429
+    },
+    "CNYBSD": {
+      "live_rate": 0.143478,
+      "lowest_rate": 0.136501,
+      "highest_rate": 0.165265
+    },
+    "CNYBZD": {
+      "live_rate": 0.289203,
+      "lowest_rate": 0.273954,
+      "highest_rate": 0.330441
+    },
+    "CNYCUC": {
+      "live_rate": 0.143511,
+      "lowest_rate": 0.136895,
+      "highest_rate": 0.162408
+    },
+    "CNYDJF": {
+      "live_rate": 25.546448,
+      "lowest_rate": 24.299908,
+      "highest_rate": 29.449266
+    },
+    "CNYERN": {
+      "live_rate": 2.152666,
+      "lowest_rate": 2.053418,
+      "highest_rate": 2.505953
+    },
+    "CNYGTQ": {
+      "live_rate": 1.119861,
+      "lowest_rate": 1.062642,
+      "highest_rate": 1.309721
+    },
+    "CNYHKD": {
+      "live_rate": 1.126532,
+      "lowest_rate": 1.07456,
+      "highest_rate": 1.281532
+    },
+    "CNYILS": {
+      "live_rate": 0.515453,
+      "lowest_rate": 0.473277,
+      "highest_rate": 0.653647
+    },
+    "CNYJOD": {
+      "live_rate": 0.101807,
+      "lowest_rate": 0.097059,
+      "highest_rate": 0.116967
+    },
+    "CNYKYD": {
+      "live_rate": 0.119546,
+      "lowest_rate": 0.113187,
+      "highest_rate": 0.136735
+    },
+    "CNYLSL": {
+      "live_rate": 2.668592,
+      "lowest_rate": 0.203118,
+      "highest_rate": 11.065684
+    },
+    "CNYMOP": {
+      "live_rate": 1.159795,
+      "lowest_rate": 1.103597,
+      "highest_rate": 1.321903
+    },
+    "CNYNAD": {
+      "live_rate": 2.66882,
+      "lowest_rate": 1.003204,
+      "highest_rate": 8.587721
+    },
+    "CNYOMR": {
+      "live_rate": 0.055252,
+      "lowest_rate": 0.052708,
+      "highest_rate": 0.063634
+    },
+    "CNYPAB": {
+      "live_rate": 0.143478,
+      "lowest_rate": 0.136501,
+      "highest_rate": 0.165265
+    },
+    "CNYQAR": {
+      "live_rate": 0.52252,
+      "lowest_rate": 0.498399,
+      "highest_rate": 0.601767
+    },
+    "CNYSAR": {
+      "live_rate": 0.538778,
+      "lowest_rate": 0.514522,
+      "highest_rate": 0.619834
+    },
+    "CNYSVC": {
+      "live_rate": 1.25522,
+      "lowest_rate": 1.194345,
+      "highest_rate": 1.447698
+    },
+    "CNYSZL": {
+      "live_rate": 2.67269,
+      "lowest_rate": 1.000072,
+      "highest_rate": 8.61278
+    },
+    "CNYTWD": {
+      "live_rate": 4.424661,
+      "lowest_rate": 4.151834,
+      "highest_rate": 5.210843
+    },
+    "CNYUSD": {
+      "live_rate": 0.143511,
+      "lowest_rate": 0.136895,
+      "highest_rate": 0.165265
+    },
+    "CNYXCD": {
+      "live_rate": 0.387846,
+      "lowest_rate": 0.369964,
+      "highest_rate": 0.446477
+    },
+    "CNYZWL": {
+      "live_rate": 46.210499,
+      "lowest_rate": 44.079978,
+      "highest_rate": 53.203843
+    }
+  }
+}

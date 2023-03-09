@@ -9,7 +9,8 @@ namespace RyanTechno.AzureApps.Services.Models
         public const string AUTHENTICATION_CLIENT_ID_ROWKEY = "AuthClientId";
         public const string AUTHENTICATION_CLIENT_SECRET_ROWKEY = "AuthClientSecret";
         public const string AUTHENTICATION_SCOPE_ROWKEY = "AuthScope";
-        public const string EXCHANGE_API_ENDPOINT_ROWKEY = "ExchangeApiEndpoint";
+        public const string LIVE_EXCHANGE_API_ENDPOINT_ROWKEY = "LiveExchangeApiEndpoint";
+        public const string DAILY_EXCHANGE_BOARDCAST_API_ENDPOINT_ROWKEY = "DailyExchangeBoardcastApiEndpoint";
         public const string SMTP_EMAIL_ACCOUNT_ROWKEY = "SmtpEmailAccount";
 
         public string Value { get; set; }
@@ -42,11 +43,14 @@ namespace RyanTechno.AzureApps.Services.Models
                     case ServiceConfigurationAzureTable.AUTHENTICATION_SCOPE_ROWKEY:
                         config.AuthenticationScope = row.Value;
                         break;
-                    case ServiceConfigurationAzureTable.EXCHANGE_API_ENDPOINT_ROWKEY:
-                        config.ExchangeApiEndpoint = row.Value;
+                    case ServiceConfigurationAzureTable.LIVE_EXCHANGE_API_ENDPOINT_ROWKEY:
+                        config.LiveExchangeApiEndpoint = row.Value;
                         break;
                     case ServiceConfigurationAzureTable.SMTP_EMAIL_ACCOUNT_ROWKEY:
                         config.SmtpEmailAccount = row.Value;
+                        break;
+                    case ServiceConfigurationAzureTable.DAILY_EXCHANGE_BOARDCAST_API_ENDPOINT_ROWKEY:
+                        config.DailyExchangeBoardcastApiEndpoint = row.Value;
                         break;
                 }
             }

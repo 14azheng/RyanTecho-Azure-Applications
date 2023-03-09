@@ -12,23 +12,28 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using RyanTechno.AzureApps.Common.Models.Infrastructure;
+using RyanTechno.AzureApps.Common.Models.Exchange;
+using System.Net.Http;
 
 namespace RyanTechno.AppService.ExchangeFunction
 {
     public class EmailSendingFunction
     {
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpRestService _httpRestService;
         private readonly IExchangeService _exchangeService;
         private readonly IEmailService _emailService;
 
         public EmailSendingFunction(
-            IHttpRestService httpRestService, 
-            IExchangeService exchangeService, 
-            IEmailService emailService)
+            IHttpRestService httpRestService,
+            IExchangeService exchangeService,
+            IEmailService emailService,
+            IHttpClientFactory httpClientFactory)
         {
             this._httpRestService = httpRestService;
             this._exchangeService = exchangeService;
             this._emailService = emailService;
+            this._httpClientFactory = httpClientFactory;
         }
 
         /// <summary>
@@ -47,12 +52,19 @@ namespace RyanTechno.AppService.ExchangeFunction
         {
             logger.LogInformation($"Exchange rate email notification trigger function executed at: {DateTime.Now}");
 
-            await QueryExchangeRateInfo(logger);
+            try
+            {
+                await RetrieveDailyExchangeBoardcast(logger);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+            }
 
             logger.LogInformation($"Exchange rate email notification trigger function finished at: {DateTime.Now}");
         }
 
-        private async Task QueryExchangeRateInfo(ILogger logger)
+        private AzureStorageInfo GetAzureStorageInfo()
         {
             AzureStorageInfo storageInfo = new AzureStorageInfo
             {
@@ -69,6 +81,13 @@ namespace RyanTechno.AppService.ExchangeFunction
                 AccountKey = Environment.GetEnvironmentVariable("StorageServiceAccountKey"),
             };
 
+            return storageInfo;
+        }
+
+        private async Task QueryLiveExchangeRateInfo(ILogger logger)
+        {
+            AzureStorageInfo storageInfo = GetAzureStorageInfo();
+
             logger.LogInformation("Storage info retrieved...");
 
             IImmutableList<CurrencySubscription> currencySubList = _exchangeService.GetSubscribedCurrencyList(storageInfo);
@@ -79,7 +98,9 @@ namespace RyanTechno.AppService.ExchangeFunction
 
             logger.LogInformation("Exchange service configuration info retrieved...");
 
-            var tokenTask = await _httpRestService.GetAccessTokenAsync(new AuthenticationInfo
+            HttpClient httpClient = this._httpClientFactory.CreateClient();
+
+            var tokenTask = await _httpRestService.GetAccessTokenAsync(httpClient, new AuthenticationInfo
             {
                 AcquireAccessTokenEndpoint = exchangeServiceConfiguration.AuthenticationServerEndpoint,
                 ClientId = exchangeServiceConfiguration.AuthenticationClientId,
@@ -93,9 +114,9 @@ namespace RyanTechno.AppService.ExchangeFunction
             {
                 string accessToken = tokenTask.Result;
 
-                var exchangeTask = await _httpRestService.GetResourcesAsync<CurrencyApiStructure>(new RestRequestInfo
+                var exchangeTask = await _httpRestService.GetResourcesAsync<CurrencyApiStructure>(httpClient, new RestRequestInfo
                 {
-                    RequestEndpoint = $"{exchangeServiceConfiguration.ExchangeApiEndpoint}?source=CNY&targets={string.Join(',', currencySubList.Select(c => c.Target))}",
+                    RequestEndpoint = $"{exchangeServiceConfiguration.LiveExchangeApiEndpoint}?source=CNY&targets={string.Join(',', currencySubList.Select(c => c.Target))}",
                     RequestHeaders = new Dictionary<string, string>
                     {
                         { "Authorization", "Bearer " + accessToken }
@@ -159,6 +180,82 @@ namespace RyanTechno.AppService.ExchangeFunction
                 else
                 {
                     logger.LogError($"Exchange live info request failed, reason: {exchangeTask.Error}");
+                }
+            }
+            else
+            {
+                logger.LogError($"Authentication token request failed, reason: {tokenTask.Error}");
+            }
+        }
+
+        private async Task RetrieveDailyExchangeBoardcast(ILogger logger)
+        {
+            AzureStorageInfo storageInfo = GetAzureStorageInfo();
+
+            logger.LogInformation("Storage info retrieved...");
+
+            /* subscribe all currencies.
+            IImmutableList<CurrencySubscription> currencySubList = _exchangeService.GetSubscribedCurrencyList(storageInfo);
+
+            logger.LogInformation("Currency subscription info retrieved...");
+            */
+
+            ExchangeServiceConfiguration exchangeServiceConfiguration = _exchangeService.GetExchangeServiceConfiguration(storageInfo);
+
+            logger.LogInformation("Exchange service configuration info retrieved...");
+
+            HttpClient httpClient = this._httpClientFactory.CreateClient();
+
+            // Get access token from Identity Server.
+            var tokenTask = await _httpRestService.GetAccessTokenAsync(httpClient, new AuthenticationInfo
+            {
+                AcquireAccessTokenEndpoint = exchangeServiceConfiguration.AuthenticationServerEndpoint,
+                ClientId = exchangeServiceConfiguration.AuthenticationClientId,
+                ClientSecret = exchangeServiceConfiguration.AuthenticationClientSecret,
+                Scope = exchangeServiceConfiguration.AuthenticationScope,
+            });
+
+            logger.LogInformation("Authentication token requesting...");
+
+            if (tokenTask.IsCompleted)
+            {
+                string accessToken = tokenTask.Result;
+
+                // Get daily boardcast information from Web API.
+                var exchangeTask = await _httpRestService.GetResourcesAsync<DailyExchangeRateBoardcastApiStructure>(httpClient, new RestRequestInfo
+                {
+                    //RequestEndpoint = $"{exchangeServiceConfiguration.DailyExchangeBoardcastApiEndpoint}?targets={string.Join(',', currencySubList.Select(c => c.Target))}",
+                    RequestEndpoint = exchangeServiceConfiguration.DailyExchangeBoardcastApiEndpoint,
+                    RequestHeaders = new Dictionary<string, string>
+                    {
+                        { "Authorization", "Bearer " + accessToken }
+                    }
+                });
+
+                logger.LogInformation("Exchange boardcast info requesting...");
+
+                if (exchangeTask.IsCompleted)
+                {
+                    DailyExchangeRateBoardcastApiStructure boardcast = exchangeTask.Result;
+
+                    logger.LogInformation($"Exchange boardcast info retrieved...H100: {boardcast.HistoricalHighestRates.Count} | H90: {boardcast.HistoricalHighestRates90.Count} | H80: {boardcast.HistoricalHighestRates80.Count} | L100: {boardcast.HistoricalLowestRates.Count} | L90: {boardcast.HistoricalLowestRates90.Count} | L80: {boardcast.HistoricalLowestRates80.Count}");
+
+                    logger.LogInformation($"Sending email notification...");
+
+                    // Send email notification.
+                    _emailService.SetSenderCredential(new OutlookSenderCredential
+                    {
+                        AccountName = Environment.GetEnvironmentVariable("EmailSenderAddress"),
+                        Password = Environment.GetEnvironmentVariable("SmtpEmailPassword"),
+                    });
+
+                    logger.LogInformation($"Email notification body: {boardcast.ToEmailBody()}");
+
+                    _emailService.SendExchangeDailyBoardcastEmail(boardcast);
+                }
+                else
+                {
+                    logger.LogError($"Exchange boardcast info request failed, reason: {exchangeTask.Error}");
                 }
             }
             else

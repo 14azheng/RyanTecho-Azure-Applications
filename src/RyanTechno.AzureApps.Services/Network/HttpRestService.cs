@@ -8,20 +8,18 @@ namespace RyanTechno.AzureApps.Services.Network
 {
     public class HttpRestService : IHttpRestService
     {
-        private readonly HttpClient _httpClient;
         private readonly ILogger<HttpRestService> _logger;
 
-        public HttpRestService(HttpClient httpClient, ILogger<HttpRestService> logger)
+        public HttpRestService(ILogger<HttpRestService> logger)
         {
-            _httpClient = httpClient;
             _logger = logger;
         }
 
-        public async Task<ServiceResult<string>> GetAccessTokenAsync(AuthenticationInfo info)
+        public async Task<ServiceResult<string>> GetAccessTokenAsync(HttpClient httpClient, AuthenticationInfo info)
         {
             _logger.LogInformation($"Start getting access token...Endpoint: {info.AcquireAccessTokenEndpoint} | Client Id: {info.ClientId} | Client Secret: {info.ClientSecret} | Scope: {info.Scope}");
 
-            var tokenResponse = await _httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = info.AcquireAccessTokenEndpoint,
                 ClientId = info.ClientId,
@@ -41,7 +39,7 @@ namespace RyanTechno.AzureApps.Services.Network
             return ServiceResult<string>.FromSuccess(tokenResponse.AccessToken);
         }
 
-        public async Task<ServiceResult<TResource>> GetResourcesAsync<TResource>(RestRequestInfo info)
+        public async Task<ServiceResult<TResource>> GetResourcesAsync<TResource>(HttpClient httpClient, RestRequestInfo info)
         {
             _logger.LogInformation($"Start getting resources...Endpoint: {info.RequestEndpoint}");
 
@@ -52,13 +50,13 @@ namespace RyanTechno.AzureApps.Services.Network
                 httpRequestMessage.Headers.Add(header.Key, header.Value);
             }
 
-            var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 TResource content = await httpResponseMessage.Content?.ReadFromJsonAsync<TResource>() ?? default(TResource);
 
-                _logger.LogInformation($"Start getting resources...");
+                _logger.LogInformation($"End getting resources...");
 
                 return ServiceResult<TResource>.FromSuccess(content);
             }
