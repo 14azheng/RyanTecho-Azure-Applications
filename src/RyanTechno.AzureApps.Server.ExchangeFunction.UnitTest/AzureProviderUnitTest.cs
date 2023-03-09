@@ -10,10 +10,10 @@ namespace RyanTechno.AzureApps.Server.ExchangeFunction.UnitTest
         {
             AzureStorageInfo storageInfo = new AzureStorageInfo
             {
-                ConnectionString = "DefaultEndpointsProtocol=https;AccountName=ryantechnostorage;AccountKey=y4z2N/6dWXUoPvBBphk25rZ6KX9AgYqxfoHIoTEYTmKTzQRpQ6jvggHINDPf+eQae8KLcEVZ/TJD+ASt+yaGWg==;EndpointSuffix=core.windows.net",
+                //ConnectionString = "DefaultEndpointsProtocol=https;AccountName=ryantechnostorage;AccountKey=y4z2N/6dWXUoPvBBphk25rZ6KX9AgYqxfoHIoTEYTmKTzQRpQ6jvggHINDPf+eQae8KLcEVZ/TJD+ASt+yaGWg==;EndpointSuffix=core.windows.net",
                 Endpoint = "https://ryantechnostorage.table.core.windows.net/",
                 AccountName = "ryantechnostorage",
-                AccountKey = "y4z2N/6dWXUoPvBBphk25rZ6KX9AgYqxfoHIoTEYTmKTzQRpQ6jvggHINDPf+eQae8KLcEVZ/TJD+ASt+yaGWg==",
+                //AccountKey = "y4z2N/6dWXUoPvBBphk25rZ6KX9AgYqxfoHIoTEYTmKTzQRpQ6jvggHINDPf+eQae8KLcEVZ/TJD+ASt+yaGWg==",
             };
 
             var currentList = AzureTableHelper.GetSubscribedCurrencyList(storageInfo);

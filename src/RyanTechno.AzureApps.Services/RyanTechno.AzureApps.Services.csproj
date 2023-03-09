@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Data.Tables" Version="12.6.1" />
     <PackageReference Include="IdentityModel" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RyanTechno.AzureApps.Common\RyanTechno.AzureApps.Common.csproj" />
     <ProjectReference Include="..\RyanTechno.AzureApps.Domain\RyanTechno.AzureApps.Domain.csproj" />
+    <ProjectReference Include="..\RyanTechno.AzureApps.Infrastructure\RyanTechno.AzureApps.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

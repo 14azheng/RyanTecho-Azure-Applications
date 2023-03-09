@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.OpenApi.Models;
+using RyanTechno.AzureApps.Common.Interfaces.Network;
+using RyanTechno.AzureApps.Services.Network;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +30,9 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("scope", "exchange");
     });
 });
+// Register Ioc services.
+builder.Services.AddSingleton<IHttpRestService, HttpRestService>();
+
 // Configure azure file logging details.
 builder.Services.Configure<AzureFileLoggerOptions>(options =>
 {

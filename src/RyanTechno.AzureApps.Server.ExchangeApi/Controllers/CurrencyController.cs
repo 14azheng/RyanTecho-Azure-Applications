@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
-using RyanTechno.AzureApps.Server.ExchangeApi.Helpers;
+using RyanTechno.AzureApps.Common.Interfaces.Network;
+using RyanTechno.AzureApps.Common.Models;
+using RyanTechno.AzureApps.Infrastructure.Helpers;
 using RyanTechno.AzureApps.Server.ExchangeApi.Models;
 
 namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
@@ -14,12 +16,17 @@ namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
         private readonly ILogger<CurrencyController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly IHttpRestService _httpRestService;
 
-        public CurrencyController(ILogger<CurrencyController> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public CurrencyController(ILogger<CurrencyController> logger, 
+            IHttpClientFactory httpClientFactory, 
+            IConfiguration configuration,
+            IHttpRestService httpRestService)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+            _httpRestService = httpRestService;
         }
 
         /// <summary>
@@ -43,7 +50,7 @@ namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
         {
             _logger.LogInformation($"New request (GetLiveExchangeRate) is coming...Source: {source} | Target: {targets}");
 
-            string liveUrl = _configuration["APILayer:URL:Live"];
+            string liveUrl = _configuration["APILayer:Url:Live"];
             liveUrl = $"{liveUrl}?source={source}";
             if (!string.IsNullOrEmpty(targets))
                 liveUrl = $"{liveUrl}&currencies={targets}";
@@ -51,12 +58,28 @@ namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
             var headers = new Dictionary<string, string>()
             {
                 { HeaderNames.Accept, "*/*" },
-                { "apikey", "WMzn6UGAogv4bk1Ky2e55N5uIZb2XjEF" }
+                { "apikey", await KeyVaultHelper.GetSecretAsync(_configuration["KeyVault:Url"], "external-service-api-key") }
             };
 
             var httpClient = _httpClientFactory.CreateClient();
 
-            return await HttpHelper.RequestResources<CurrencyData>(httpClient, liveUrl, headers);
+            RestRequestInfo requestInfo = new()
+            {
+                RequestEndpoint = liveUrl,
+                RequestHeaders = headers,
+            };
+            
+            var result = await _httpRestService.GetResourcesAsync<ExternalCurrencyApiStructure>(requestInfo);
+
+            if (result.IsCompleted)
+            {
+                return new JsonResult(result.Result);
+            }
+            else
+            {
+                _logger.LogError($"Failed in getting resource, error: {result.Error}");
+                return new JsonResult(result.Error);
+            }
         }
     }
 }
