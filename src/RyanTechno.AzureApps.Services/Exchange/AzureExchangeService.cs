@@ -115,5 +115,17 @@ namespace RyanTechno.AzureApps.Services.Exchange
                 LowestRate = raw.Value.Min(r => r.Value.Rate),
             }).ToImmutableDictionary(s => s.Target);
         }
+
+        public IImmutableDictionary<string, string> GetCurrencySubjects(string referenceTablePath)
+        {
+            if (!File.Exists(referenceTablePath))
+            {
+                throw new FileNotFoundException("The specified currency reference table file does not exist.");
+            }
+
+            CurrencySubjectJsonStructure currencyTable = IOHelper.DeserializeJsonFile<CurrencySubjectJsonStructure>(referenceTablePath);
+
+            return currencyTable.Currencies.ToImmutableDictionary();
+        }
     }
 }

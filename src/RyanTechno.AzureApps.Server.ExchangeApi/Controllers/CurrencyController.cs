@@ -7,6 +7,7 @@ using RyanTechno.AzureApps.Common.Models;
 using RyanTechno.AzureApps.Common.Models.Exchange;
 using RyanTechno.AzureApps.Domain.Exchange;
 using RyanTechno.AzureApps.Infrastructure.Helpers;
+using RyanTechno.AzureApps.Services.Extensions;
 using System.Collections.Immutable;
 
 namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
@@ -74,7 +75,7 @@ namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
         /// </remarks>
         [HttpGet(Name = "GetDailyExchangeRateBoardcast")]
         [Route("[action]")]
-        public async Task<JsonResult> GetDailyBoardcast(string? targets)
+        public async Task<JsonResult> GetDailyBoardcast(string? targets, bool? translate)
         {
             _logger.LogInformation($"New request (GetDailyExchangeRateBoardcast) is coming...Target: {targets ?? "All"}");
 
@@ -132,6 +133,25 @@ namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
                     else if (quote.Value >= highestRate70) // Higher than 70% historical highest rate
                     {
                         boardcast.HistoricalHighestRates70.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                    }
+                }
+
+                if (translate == true)
+                {
+                    // Translate currency subjects to Chinese.
+                    string filePath = Path.Combine(_webHostEnvironment.ContentRootPath, _configuration["ExchangeRates:Reference:CurrencySubjectFolder"], "currency-table-cn-zh.json");
+                    var currencySubjects = _exchangeService.GetCurrencySubjects(filePath);
+
+                    if (currencySubjects != null)
+                    {
+                        boardcast.HistoricalLowestRates.TranslateCurrencySubject(currencySubjects, "CNY");
+                        boardcast.HistoricalLowestRates90.TranslateCurrencySubject(currencySubjects, "CNY");
+                        boardcast.HistoricalLowestRates80.TranslateCurrencySubject(currencySubjects, "CNY");
+                        boardcast.HistoricalLowestRates70.TranslateCurrencySubject(currencySubjects, "CNY");
+                        boardcast.HistoricalHighestRates.TranslateCurrencySubject(currencySubjects, "CNY");
+                        boardcast.HistoricalHighestRates90.TranslateCurrencySubject(currencySubjects, "CNY");
+                        boardcast.HistoricalHighestRates80.TranslateCurrencySubject(currencySubjects, "CNY");
+                        boardcast.HistoricalHighestRates70.TranslateCurrencySubject(currencySubjects, "CNY");
                     }
                 }
             }
