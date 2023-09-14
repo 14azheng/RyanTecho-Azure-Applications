@@ -65,7 +65,8 @@ namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
         /// <summary>
         /// Retrieves daily exchange rate boardcast news.
         /// </summary>
-        /// <param name="targets">Target currencies</param>
+        /// <param name="targets">Target currencies.</param>
+        /// <param name="translate">Whether to translate into Chinese.</param>
         /// <returns>Exchange rates</returns>
         /// <remarks>
         /// Sample Request:
@@ -79,84 +80,96 @@ namespace RyanTechno.AzureApps.Server.ExchangeApi.Controllers
         {
             _logger.LogInformation($"New request (GetDailyExchangeRateBoardcast) is coming...Target: {targets ?? "All"}");
 
-            // Initial historical exchange rate data.
-            string folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, _configuration["ExchangeRates:HistoricalData:OfflineFolder"]);
-            var fileRawData = _exchangeService.GetHistoricalExchangeRatesFromFiles(folderPath);
-            IImmutableDictionary<string, HistoricalExchangeRateSummary> historicalExchangeRates = _exchangeService.SummarizeHistoricalExchangeRates(fileRawData);
-
-            ExternalLiveRateApiStructure liveRate = await RequestLiveExchangeRateAsync("CNY", targets);
-
-            DailyExchangeRateBoardcastApiStructure boardcast = new DailyExchangeRateBoardcastApiStructure();
-            decimal lowestRate90, lowestRate80, lowestRate70, highestRate90, highestRate80, highestRate70;
-            // Compare live rate and historical rates.
-            if (liveRate is not null && liveRate.Source == "CNY")
+            try
             {
-                foreach (var quote in liveRate.Quotes)
+                // Initial historical exchange rate data.
+                string folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, _configuration["ExchangeRates:HistoricalData:OfflineFolder"]);
+                var fileRawData = _exchangeService.GetHistoricalExchangeRatesFromFiles(folderPath);
+                IImmutableDictionary<string, HistoricalExchangeRateSummary> historicalExchangeRates = _exchangeService.SummarizeHistoricalExchangeRates(fileRawData);
+
+                ExternalLiveRateApiStructure liveRate = await RequestLiveExchangeRateAsync("CNY", targets);
+
+                DailyExchangeRateBoardcastApiStructure boardcast = new DailyExchangeRateBoardcastApiStructure();
+                decimal lowestRate90, lowestRate80, lowestRate70, highestRate90, highestRate80, highestRate70;
+                // Compare live rate and historical rates.
+                if (liveRate is not null && liveRate.Source == "CNY")
                 {
-                    HistoricalExchangeRateSummary history = historicalExchangeRates[quote.Key];
-                    lowestRate90 = history.LowestRate + (history.HighestRate - history.LowestRate) * 0.1M;
-                    lowestRate80 = history.LowestRate + (history.HighestRate - history.LowestRate) * 0.2M;
-                    lowestRate70 = history.LowestRate + (history.HighestRate - history.LowestRate) * 0.3M;
-                    highestRate90 = history.HighestRate - (history.HighestRate - history.LowestRate) * 0.1M;
-                    highestRate80 = history.HighestRate - (history.HighestRate - history.LowestRate) * 0.2M;
-                    highestRate70 = history.HighestRate - (history.HighestRate - history.LowestRate) * 0.3M;
+                    foreach (var quote in liveRate.Quotes)
+                    {
+                        if (historicalExchangeRates.ContainsKey(quote.Key))
+                        {
+                            HistoricalExchangeRateSummary history = historicalExchangeRates[quote.Key];
+                            lowestRate90 = history.LowestRate + (history.HighestRate - history.LowestRate) * 0.1M;
+                            lowestRate80 = history.LowestRate + (history.HighestRate - history.LowestRate) * 0.2M;
+                            lowestRate70 = history.LowestRate + (history.HighestRate - history.LowestRate) * 0.3M;
+                            highestRate90 = history.HighestRate - (history.HighestRate - history.LowestRate) * 0.1M;
+                            highestRate80 = history.HighestRate - (history.HighestRate - history.LowestRate) * 0.2M;
+                            highestRate70 = history.HighestRate - (history.HighestRate - history.LowestRate) * 0.3M;
 
-                    if (quote.Value <= history.LowestRate) // Lower than historical lowest rate
-                    {
-                        boardcast.HistoricalLowestRates.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
-                    }
-                    else if (quote.Value <= lowestRate90) // Lower than 90% historical lowest rate
-                    {
-                        boardcast.HistoricalLowestRates90.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
-                    }
-                    else if (quote.Value <= lowestRate80) // Lower than 80% historical lowest rate
-                    {
-                        boardcast.HistoricalLowestRates80.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
-                    }
-                    else if (quote.Value <= lowestRate70) // Lower than 70% historical lowest rate
-                    {
-                        boardcast.HistoricalLowestRates70.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            if (quote.Value <= history.LowestRate) // Lower than historical lowest rate
+                            {
+                                boardcast.HistoricalLowestRates.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            }
+                            else if (quote.Value <= lowestRate90) // Lower than 90% historical lowest rate
+                            {
+                                boardcast.HistoricalLowestRates90.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            }
+                            else if (quote.Value <= lowestRate80) // Lower than 80% historical lowest rate
+                            {
+                                boardcast.HistoricalLowestRates80.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            }
+                            else if (quote.Value <= lowestRate70) // Lower than 70% historical lowest rate
+                            {
+                                boardcast.HistoricalLowestRates70.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            }
+
+                            if (quote.Value >= history.HighestRate) // Higher than historical highest rate
+                            {
+                                boardcast.HistoricalHighestRates.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            }
+                            else if (quote.Value >= highestRate90) // Higher than 90% historical highest rate
+                            {
+                                boardcast.HistoricalHighestRates90.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            }
+                            else if (quote.Value >= highestRate80) // Higher than 80% historical highest rate
+                            {
+                                boardcast.HistoricalHighestRates80.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            }
+                            else if (quote.Value >= highestRate70) // Higher than 70% historical highest rate
+                            {
+                                boardcast.HistoricalHighestRates70.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                            }
+                        }
                     }
 
-                    if (quote.Value >= history.HighestRate) // Higher than historical highest rate
+                    if (translate == true)
                     {
-                        boardcast.HistoricalHighestRates.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
-                    }
-                    else if (quote.Value >= highestRate90) // Higher than 90% historical highest rate
-                    {
-                        boardcast.HistoricalHighestRates90.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
-                    }
-                    else if (quote.Value >= highestRate80) // Higher than 80% historical highest rate
-                    {
-                        boardcast.HistoricalHighestRates80.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
-                    }
-                    else if (quote.Value >= highestRate70) // Higher than 70% historical highest rate
-                    {
-                        boardcast.HistoricalHighestRates70.Add(quote.Key, new DailyExchangeRateBoardcastBenchmark(quote.Value, history.LowestRate, history.HighestRate));
+                        // Translate currency subjects to Chinese.
+                        string filePath = Path.Combine(_webHostEnvironment.ContentRootPath, _configuration["ExchangeRates:Reference:CurrencySubjectFolder"], "currency-table-cn-zh.json");
+                        var currencySubjects = _exchangeService.GetCurrencySubjects(filePath);
+
+                        if (currencySubjects != null)
+                        {
+                            boardcast.HistoricalLowestRates.TranslateCurrencySubject(currencySubjects, "CNY");
+                            boardcast.HistoricalLowestRates90.TranslateCurrencySubject(currencySubjects, "CNY");
+                            boardcast.HistoricalLowestRates80.TranslateCurrencySubject(currencySubjects, "CNY");
+                            boardcast.HistoricalLowestRates70.TranslateCurrencySubject(currencySubjects, "CNY");
+                            boardcast.HistoricalHighestRates.TranslateCurrencySubject(currencySubjects, "CNY");
+                            boardcast.HistoricalHighestRates90.TranslateCurrencySubject(currencySubjects, "CNY");
+                            boardcast.HistoricalHighestRates80.TranslateCurrencySubject(currencySubjects, "CNY");
+                            boardcast.HistoricalHighestRates70.TranslateCurrencySubject(currencySubjects, "CNY");
+                        }
                     }
                 }
 
-                if (translate == true)
-                {
-                    // Translate currency subjects to Chinese.
-                    string filePath = Path.Combine(_webHostEnvironment.ContentRootPath, _configuration["ExchangeRates:Reference:CurrencySubjectFolder"], "currency-table-cn-zh.json");
-                    var currencySubjects = _exchangeService.GetCurrencySubjects(filePath);
-
-                    if (currencySubjects != null)
-                    {
-                        boardcast.HistoricalLowestRates.TranslateCurrencySubject(currencySubjects, "CNY");
-                        boardcast.HistoricalLowestRates90.TranslateCurrencySubject(currencySubjects, "CNY");
-                        boardcast.HistoricalLowestRates80.TranslateCurrencySubject(currencySubjects, "CNY");
-                        boardcast.HistoricalLowestRates70.TranslateCurrencySubject(currencySubjects, "CNY");
-                        boardcast.HistoricalHighestRates.TranslateCurrencySubject(currencySubjects, "CNY");
-                        boardcast.HistoricalHighestRates90.TranslateCurrencySubject(currencySubjects, "CNY");
-                        boardcast.HistoricalHighestRates80.TranslateCurrencySubject(currencySubjects, "CNY");
-                        boardcast.HistoricalHighestRates70.TranslateCurrencySubject(currencySubjects, "CNY");
-                    }
-                }
+                return new JsonResult(boardcast);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurs in API {nameof(GetDailyBoardcast)}: {ex.Message}");
 
-            return new JsonResult(boardcast);
+                throw;
+            }
         }
 
         private async Task<ExternalLiveRateApiStructure> RequestLiveExchangeRateAsync(string source, string? targets)
