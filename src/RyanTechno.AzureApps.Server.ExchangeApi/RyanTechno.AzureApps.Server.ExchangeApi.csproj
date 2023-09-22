@@ -29,7 +29,6 @@
   <ItemGroup>
     <Folder Include="Properties\ServiceDependencies\" />
     <Folder Include="Resources\Exchange\sample\" />
-    <Folder Include="Resources\Exchange\reference\" />
   </ItemGroup>
 
 </Project>
