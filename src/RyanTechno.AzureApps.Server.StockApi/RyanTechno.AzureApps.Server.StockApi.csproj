@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.20" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RyanTechno.AzureApps.Common\RyanTechno.AzureApps.Common.csproj" />
+    <ProjectReference Include="..\RyanTechno.AzureApps.Domain\RyanTechno.AzureApps.Domain.csproj" />
+    <ProjectReference Include="..\RyanTechno.AzureApps.Infrastructure\RyanTechno.AzureApps.Infrastructure.csproj" />
+    <ProjectReference Include="..\RyanTechno.AzureApps.Services\RyanTechno.AzureApps.Services.csproj" />
+  </ItemGroup>
+
+</Project>

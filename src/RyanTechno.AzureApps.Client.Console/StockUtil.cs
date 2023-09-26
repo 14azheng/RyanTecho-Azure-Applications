@@ -15,9 +15,9 @@ namespace RyanTechno.AzureApps.Client.Console
             var tokenTask = await httpRestService.GetAccessTokenAsync(httpClient, new AuthenticationInfo
             {
                 AcquireAccessTokenEndpoint = "https://auth.ryantechno.com/connect/token",
-                ClientId = "exchange_api",
-                ClientSecret = "bpzh5bq0Cx",
-                Scope = "exchange",
+                ClientId = "stock_api",
+                ClientSecret = "94TQ7n7f8E",
+                Scope = "stock",
             });
 
             if (tokenTask.IsCompleted)
@@ -26,7 +26,7 @@ namespace RyanTechno.AzureApps.Client.Console
                 // Get daily stock information from Web API.
                 var stockTask = await httpRestService.GetResourcesAsync<List<StockDaily>?>(httpClient, new RestRequestInfo
                 {
-                    RequestEndpoint = "https://localhost:7253/api/stock/GetDailyStock?stockMarket=SHH&stockCode=603189",
+                    RequestEndpoint = "https://stock.ryantechno.com/api/stock/GetDailyStock?stockMarket=SHH&stockCode=603189",
                     RequestHeaders = new Dictionary<string, string>
                     {
                         { "Authorization", "Bearer " + accessToken }

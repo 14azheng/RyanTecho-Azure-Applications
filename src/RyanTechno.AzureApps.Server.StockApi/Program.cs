@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.OpenApi.Models;
-using RyanTechno.AzureApps.Common.Interfaces.Exchange;
 using RyanTechno.AzureApps.Common.Interfaces.Network;
-using RyanTechno.AzureApps.Services.Exchange;
+using RyanTechno.AzureApps.Common.Interfaces.Stock;
 using RyanTechno.AzureApps.Services.Network;
+using RyanTechno.AzureApps.Services.Stock;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,14 +27,14 @@ builder.Services.AddAuthentication("Bearer")
 // Require specified scope for authorization.
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("require_exchange_scope", policy =>
+    options.AddPolicy("require_stock_scope", policy =>
     {
-        policy.RequireClaim("scope", "exchange");
+        policy.RequireClaim("scope", "stock");
     });
 });
 // Register Ioc services.
 builder.Services.AddSingleton<IHttpRestService, HttpRestService>();
-builder.Services.AddSingleton<IExchangeService, AzureExchangeService>();
+builder.Services.AddSingleton<IStockService, AzureStockService>();
 
 // Configure azure file logging details.
 builder.Services.Configure<AzureFileLoggerOptions>(options =>

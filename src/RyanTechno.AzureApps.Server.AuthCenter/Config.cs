@@ -22,7 +22,7 @@ public static class Config
             { 
                 new Client
                 {
-                    ClientId = "stock_mobile",
+                    ClientId = "stock_api",
 
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials,

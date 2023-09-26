@@ -37,7 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RyanTechno.AzureApps.Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RyanTechno.AzureApps.Infrastructure.UnitTest", "RyanTechno.AzureApps.Infrastructure.UnitTest\RyanTechno.AzureApps.Infrastructure.UnitTest.csproj", "{D4F0C201-4FC6-424E-B747-F2A2A18B0E0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RyanTechno.AzureApps.Client.Console", "RyanTechno.AzureApps.Client.Console\RyanTechno.AzureApps.Client.Console.csproj", "{30FB4593-095F-49E8-9D2B-C1D8536C58B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RyanTechno.AzureApps.Client.Console", "RyanTechno.AzureApps.Client.Console\RyanTechno.AzureApps.Client.Console.csproj", "{30FB4593-095F-49E8-9D2B-C1D8536C58B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RyanTechno.AzureApps.Server.StockApi", "RyanTechno.AzureApps.Server.StockApi\RyanTechno.AzureApps.Server.StockApi.csproj", "{8F310E32-BE8A-49BA-8F98-3568B54DCDBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +97,10 @@ Global
 		{30FB4593-095F-49E8-9D2B-C1D8536C58B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30FB4593-095F-49E8-9D2B-C1D8536C58B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30FB4593-095F-49E8-9D2B-C1D8536C58B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F310E32-BE8A-49BA-8F98-3568B54DCDBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F310E32-BE8A-49BA-8F98-3568B54DCDBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F310E32-BE8A-49BA-8F98-3568B54DCDBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F310E32-BE8A-49BA-8F98-3568B54DCDBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +118,7 @@ Global
 		{4C4C4556-8CAB-4FBB-9022-642E3CC539C3} = {227086D5-924C-46C4-AA73-DF309EC773A8}
 		{D4F0C201-4FC6-424E-B747-F2A2A18B0E0D} = {227086D5-924C-46C4-AA73-DF309EC773A8}
 		{30FB4593-095F-49E8-9D2B-C1D8536C58B6} = {B65039EB-6E0C-4231-B072-6E78CE9B88B6}
+		{8F310E32-BE8A-49BA-8F98-3568B54DCDBD} = {CF70B417-B9D0-470A-90DF-38E717081FFE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B5C3973-3AF7-468D-852A-917C0030833B}
