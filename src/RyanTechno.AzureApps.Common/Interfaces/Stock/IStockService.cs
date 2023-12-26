@@ -5,5 +5,7 @@ namespace RyanTechno.AzureApps.Common.Interfaces.Stock
     public interface IStockService
     {
         Task<List<StockDaily>?> GetDailyStockInfoAsync(HttpClient httpClient, string requestUrl);
+
+        Task<byte[]> GetDailyStockInfoCsvAsync(HttpClient httpClient, string requestUrl);
     }
 }

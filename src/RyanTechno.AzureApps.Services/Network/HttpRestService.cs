@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using RyanTechno.AzureApps.Common.Interfaces.Network;
 using RyanTechno.AzureApps.Common.Models;
+using System.Diagnostics;
 using System.Net.Http.Json;
 
 namespace RyanTechno.AzureApps.Services.Network
@@ -65,6 +66,54 @@ namespace RyanTechno.AzureApps.Services.Network
                 _logger.LogError($"Get resources failed. Response code: {httpResponseMessage.StatusCode} | Error message: {httpResponseMessage.Content}");
 
                 return ServiceResult<TResource>.FromFailure(default(TResource), httpResponseMessage.Content.ToString());
+            }
+        }
+
+        public async Task<ServiceResult<byte[]>> GetStreamAsync(HttpClient httpClient, RestRequestInfo info)
+        {
+            _logger.LogInformation($"Start getting stream...Endpoint: {info.RequestEndpoint}");
+
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, info.RequestEndpoint);
+            // Construst request headers.
+            foreach (var header in info.RequestHeaders)
+            {
+                httpRequestMessage.Headers.Add(header.Key, header.Value);
+            }
+
+            byte[] contents = Array.Empty<byte>();
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                string contentStr = await httpResponseMessage.Content.ReadAsStringAsync();
+                if (contentStr.Contains("error", StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.LogError($"Get stream failed. Response code: {httpResponseMessage.StatusCode} | Error message: {contentStr}");
+
+                    return ServiceResult<byte[]>.FromFailure(contents, contentStr);
+                }
+
+                using Stream? stream = await httpResponseMessage.Content.ReadAsStreamAsync() ?? null;
+
+                if (stream != null)
+                {
+                    using MemoryStream ms = new();
+                    stream.CopyTo(ms);
+                    contents = ms.ToArray();
+                }
+                else
+                {
+                    _logger.LogInformation("No content returns from endpoint.");
+                }
+                _logger.LogInformation($"End getting stream...");
+
+                return ServiceResult<byte[]>.FromSuccess(contents);
+            }
+            else
+            {
+                _logger.LogError($"Get stream failed. Response code: {httpResponseMessage.StatusCode} | Error message: {httpResponseMessage.Content}");
+
+                return ServiceResult<byte[]>.FromFailure(contents, httpResponseMessage.Content.ToString());
             }
         }
     }

@@ -37,5 +37,24 @@ namespace RyanTechno.AzureApps.Services.Stock
                 return null;
             }
         }
+
+        public async Task<byte[]> GetDailyStockInfoCsvAsync(HttpClient httpClient, string requestUrl)
+        {
+            ServiceResult<byte[]> serviceResult = await _httpRestService.GetStreamAsync(httpClient, new RestRequestInfo()
+            {
+                //RequestEndpoint = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=603189.SHH&outputsize=full&apikey=NXMKD2BQGY8WWV58"
+                RequestEndpoint = requestUrl,
+            });
+
+            if (serviceResult.IsCompleted)
+            {
+                return serviceResult.Result;
+            }
+            else
+            {
+                _logger.LogError($"Failed in getting resource, error: {serviceResult.Error}");
+                return Array.Empty<byte>();
+            }
+        }
     }
 }
